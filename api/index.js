@@ -12,6 +12,16 @@ app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 });
 
+//Creates a new row with user information. 
+app.post("/", (req, res)=>{
+    let sql = "INSERT INTO inbound_leads(name, email, phone, address, city, state, zip_code, equipment_type, description, estimated_value) " +
+        "VALUES(?,?,?,?,?,?,?,?,?,?)";
+    db.run(sql,[req.body.name, req.body.email, req.body.phone, req.body.address, req.body.city, req.body.usState, req.body.zipcode, req.body.equipmentType, req.body.description, req.body.estimatedValue],
+        (err)=>{if(err){
+            res.status(500).json({"error": err.message})
+        }})
+})
+
 app.get("/api/hello", (req, res) => {
     res.json({ message: "Hello from server!" });
 });

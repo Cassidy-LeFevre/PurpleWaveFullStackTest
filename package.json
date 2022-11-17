@@ -24,7 +24,11 @@
     },
     "homepage": "https://github.com/PurpleWave/full-stack-hiring-test#readme",
     "dependencies": {
+        "bootstrap": "^5.2.2",
         "express": "^4.18.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "reactstrap": "^9.1.5",
         "sqlite3": "^5.1.2"
     }
 }
