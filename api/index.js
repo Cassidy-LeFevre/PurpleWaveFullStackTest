@@ -19,7 +19,8 @@ app.post("/", (req, res)=>{
     db.run(sql,[req.body.name, req.body.email, req.body.phone, req.body.address, req.body.city, req.body.usState, req.body.zipcode, req.body.equipmentType, req.body.description, req.body.estimatedValue],
         (err)=>{if(err){
             res.status(500).json({"error": err.message})
-        }})
+        }});
+    alert(db.all("SELECT * FROM inbound_leads" , [], (err)=>{if(err)return console.log(err.message)}))  
 })
 
 app.get("/api/hello", (req, res) => {

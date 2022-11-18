@@ -7,8 +7,8 @@ export default function Form(){
 
     //Sets the default values for the form. 
     const [formData, setFormData] = React.useState({
-        name :"First Last", email: "you@email.com", phone:"(123)456-7891", address:"1234 Auction st", city:"Manhattan", usState:"",zipcode:"66502",
-        equipmentType:"", description:"Tell us about your equipment!", estimatedValue: ""
+        name :"", email: "", phone:"", address:"", city:"", usState:"",zipcode:"",
+        equipmentType:"", description:"", estimatedValue: 0
     })
     
     /*Upon the components mounting, the equipment types are fetched from the API and
@@ -29,25 +29,37 @@ export default function Form(){
             }
         })
     }
+
+    function handleSubmit(event){
+
+        fetch("/", {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify(formData)
+        })
+
+        event.preventDefault();
+    }
     
     //renders form.
     return(
         <>
             <h1>About You:</h1>
-            <form >
+            <form onSubmit={handleSubmit} >
                 <div className = "form-group">
-                    <label for ="name" />
+                    <label>
                         Your Name:
-                        <input name ="name" type= "text"className = "mb-2 mr-sm-2" onChange = {handleChange} value= {formData.name} />
+                        <input name ="name" type= "text"className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue= {formData.name} />
+                    </label>
                 </div>
                 
 
                 <div className= "form-group">
                     <label>
                         Contact Details (At least one):
-                        <input name = "email" type ="email" className = "mb-2 mr-sm-2" onChange = {handleChange} value = {formData.email}/>
+                        <input name = "email" type ="email" className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue = {formData.email}/>
                         
-                        <input name = "phone" type="text" className = "mb-2 mr-sm-2" onChange = {handleChange} value = {formData.phone} />
+                        <input name = "phone" type="text" className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue = {formData.phone} />
                     </label>
                 </div>
                 
@@ -55,12 +67,12 @@ export default function Form(){
                 <div className= "form-group">
                     <label>
                         Address:
-                        <input name = "address" type = "text" className = "mb-2 mr-sm-2" onChange = {handleChange} value = {formData.address} />
+                        <input name = "address" type = "text" className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue = {formData.address} />
                     </label>
 
                     <label>
                         City:
-                        <input name = "city" type ="text" className = "mb-2 mr-sm-2" onChange = {handleChange} value = {formData.city} />
+                        <input name = "city" type ="text" className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue = {formData.city} />
                     </label>
 
                     <label>
@@ -73,7 +85,7 @@ export default function Form(){
 
                     <label>
                         Zip Code:
-                        <input name = "zipcode" type = "text"className = "mb-2 mr-sm-2" onChange = {handleChange} value= {formData.zipcode} />
+                        <input name = "zipcode" type = "text"className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue= {formData.zipcode} />
                     </label>
                 </div>
 
@@ -83,20 +95,27 @@ export default function Form(){
                 <h1>About Your Equipment:</h1>
                 
                 <div className = "form-group" >
-                    <label for= "equipmentType">Equipment Type:</label>
-                    <select id = "equipmentType" name = "equipmentType" className = "mb-2 mr-sm-2" onChange = {handleChange}>
-                        <option value = "">--Please Choose--</option>
-                        <EquipmentOptions data = {equipmentList} />
-                    </select>
+                    <label>
+                        Equipment Type:
+                        <select id = "equipmentType" name = "equipmentType" className = "mb-2 mr-sm-2" onChange = {handleChange}>
+                            <option value = "">--Please Choose--</option>
+                            <EquipmentOptions data = {equipmentList} />
+                        </select>
+                    </label>
                 </div>
-
-                <label for = "description"> Description: </label>
-                <textarea name = "description" rows = "8" cols="60" className = "mb-2 mr-sm-2" value = {formData.description}  /> 
 
                 <div className = "form-group">
-                    <label for = "estimatedValue"> Estimated Value:</label>
-                    <input name = "estimatedValue" type= "number" className = "mb-2 mr-sm-2" value = {formData.estimatedValue} />
+                    <label> Description:
+                        <textarea name = "description" rows = "8" cols="60" className = "mb-2 mr-sm-2" defaultValue = {formData.description}  /> 
+                    </label>
                 </div>
+
+                <div className = "form-group">
+                    <label> Estimated Value:
+                            <input name = "estimatedValue" type= "number" className = "mb-2 mr-sm-2" defaultValue = {formData.estimatedValue} />
+                    </label>
+                </div>
+
 
                 <input type = "submit" />
 
