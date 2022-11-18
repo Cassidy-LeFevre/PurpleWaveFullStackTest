@@ -1,10 +1,15 @@
 const path = require('path');
 const express = require("express");
+const bodyParser = require('body-parser');
 const db = require("./database.js");
+const cors = require('cors');
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
@@ -13,14 +18,25 @@ app.listen(PORT, () => {
 });
 
 //Creates a new row with user information. 
-app.post("/", (req, res)=>{
+app.post("/api/new", (req, res)=>{
+    console.log(req.body);
     let sql = "INSERT INTO inbound_leads(name, email, phone, address, city, state, zip_code, equipment_type, description, estimated_value) " +
         "VALUES(?,?,?,?,?,?,?,?,?,?)";
-    db.run(sql,[req.body.name, req.body.email, req.body.phone, req.body.address, req.body.city, req.body.usState, req.body.zipcode, req.body.equipmentType, req.body.description, req.body.estimatedValue],
-        (err)=>{if(err){
+
+    let params = [req.body.name, req.body.email, req.body.phone, req.body.address, req.body.city, req.body.usState, req.body.zipcode, req.body.equipmentType, req.body.description, req.body.estimatedValue];
+    db.run(sql,params, (err, res)=>{
+        if(err){
             res.status(500).json({"error": err.message})
-        }});
-    alert(db.all("SELECT * FROM inbound_leads" , [], (err)=>{if(err)return console.log(err.message)}))  
+    }});
+
+    db.all("SELECT * from inbound_leads", [], function(err, rows) {
+        if (err) {
+            res.status(400).json({"error": err.message})
+        } else {
+            console.log(rows);
+            res.send("Success")
+        }
+    }) 
 })
 
 app.get("/api/hello", (req, res) => {

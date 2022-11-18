@@ -1,6 +1,6 @@
 import React from "react";
 import {} from 'reactstrap';
-
+import axios from 'axios';
 
 
 export default function Form(){
@@ -31,14 +31,34 @@ export default function Form(){
     }
 
     function handleSubmit(event){
+        handleCreate();
+        event.preventDefault();
+        if( (formData.name.length > 8) && ( (formData.email.length > 8) || (formData.phone.length >= 10))
+             && (formData.usState != "") && (formData.equipmentType != "") && (formData.description.length >= 10) ){
 
-        fetch("/", {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify(formData)
+             }
+
+    }
+
+    const handleCreate = () => {
+        axios.post('http://localhost:3001/api/new', {
+            name : formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            zipcode: formData.zipcode,
+            equipmentType: formData.equipmentType,
+            description: formData.description,
+            estimatedValue: formData.estimatedValue
+
         })
 
-        event.preventDefault();
+        .then(res => {
+            alert(res.data);
+            return;
+        })
     }
     
     //renders form.
@@ -106,7 +126,7 @@ export default function Form(){
 
                 <div className = "form-group">
                     <label> Description:
-                        <textarea name = "description" rows = "8" cols="60" className = "mb-2 mr-sm-2" defaultValue = {formData.description}  /> 
+                        <textarea name = "description" rows = "8" cols="60" className = "mb-2 mr-sm-2" defaultValue = {formData.description} onChange = {handleChange}  /> 
                     </label>
                 </div>
 
