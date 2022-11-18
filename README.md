@@ -13,6 +13,7 @@ developing an API and a frontend in the same repository.
 1. `npm install`
 
 ## Running the Project
+*note from Cassidy: you may need to run npm install react-scripts --save
 
 * To run the API: `npm run api`
 * To run the Frontend: `npm run frontend`
