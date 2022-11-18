@@ -19,24 +19,19 @@ app.listen(PORT, () => {
 
 //Creates a new row with user information. 
 app.post("/api/new", (req, res)=>{
+
+    //logs request body to console
     console.log(req.body);
     let sql = "INSERT INTO inbound_leads(name, email, phone, address, city, state, zip_code, equipment_type, description, estimated_value) " +
         "VALUES(?,?,?,?,?,?,?,?,?,?)";
 
-    let params = [req.body.name, req.body.email, req.body.phone, req.body.address, req.body.city, req.body.usState, req.body.zipcode, req.body.equipmentType, req.body.description, req.body.estimatedValue];
+    let params = [req.body.name, req.body.email, req.body.phone, req.body.address, req.body.city, req.body.state, req.body.zipcode, req.body.equipmentType, req.body.description, req.body.estimatedValue];
     db.run(sql,params, (err, res)=>{
         if(err){
             res.status(500).json({"error": err.message})
-    }});
+    }}); 
 
-    db.all("SELECT * from inbound_leads", [], function(err, rows) {
-        if (err) {
-            res.status(400).json({"error": err.message})
-        } else {
-            console.log(rows);
-            res.send("Success")
-        }
-    }) 
+    res.send("Success")
 })
 
 app.get("/api/hello", (req, res) => {

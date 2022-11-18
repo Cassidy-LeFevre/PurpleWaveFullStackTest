@@ -20,7 +20,7 @@ export default function Form(){
         .then((data) => setEquipmentList(data))
     }, [])
 
-    /*When any value of the form is changed, the form data's state is updated. */
+    //When any value of the form is changed, the form data's state is updated.
     function handleChange(event){
         setFormData((prevForm)=>{
             return {
@@ -29,17 +29,46 @@ export default function Form(){
             }
         })
     }
-
+    
+    //Checks data to ensure it is valid. 
     function handleSubmit(event){
-        handleCreate();
-        event.preventDefault();
-        if( (formData.name.length > 8) && ( (formData.email.length > 8) || (formData.phone.length >= 10))
-             && (formData.usState != "") && (formData.equipmentType != "") && (formData.description.length >= 10) ){
 
-             }
+        //initializes fail reason, so all cases of failure are caught. 
+        let failReason = "unknown reason";
+        let failed = true;
+
+        event.preventDefault();
+        
+        //uses method to call api if data is valid. 
+        if( (formData.name.length >= 5) && ( (formData.email.length >= 5) || (formData.phone.length >= 10))
+             && (formData.usState !== "") && (formData.equipmentType !== "") && (formData.description.length >= 10) ){
+                handleCreate();
+                failed = false;
+                //if the submission is successful, the page reloads. 
+                window.location.reload(false);
+
+        //generates reason for failure if data is invalid. 
+        } else if(formData.name.length < 5){
+            failReason = "name field is invalid."
+        } else if( (formData.email.length < 5) && (formData.phone.length <10) ){
+            failReason = "contact details are invalid."
+        } else if (formData.usState === ""){
+            failReason ="state field is invalid."
+        } else if(formData.equipmentType === ""){
+            failReason = "equipment type field is invalid."
+        } else if(formData.description.length < 10){
+            failReason = "equipment description field is invalid."
+        }
+
+        //alerts user to failure reason if input fails. 
+        if(failed){
+            alert("Form submission failed because " + failReason);
+        }
 
     }
 
+
+    //calls the api to save a user request. 
     const handleCreate = () => {
         axios.post('http://localhost:3001/api/new', {
             name : formData.name,
@@ -47,7 +76,7 @@ export default function Form(){
             phone: formData.phone,
             address: formData.address,
             city: formData.city,
-            state: formData.state,
+            state: formData.usState,
             zipcode: formData.zipcode,
             equipmentType: formData.equipmentType,
             description: formData.description,
@@ -61,83 +90,101 @@ export default function Form(){
         })
     }
     
+    //className for all inputs for reactstrap styling
+    let inputClassRStrap = "form-control mb-2 mr-sm-2";
+
     //renders form.
     return(
-        <>
-            <h1>About You:</h1>
+        <>  <h1>Request to Auction Equipment</h1>
+            <p className = "text-danger">* indicates a required field</p>
+            <br/>
+
             <form onSubmit={handleSubmit} >
-                <div className = "form-group">
-                    <label>
-                        Your Name:
-                        <input name ="name" type= "text"className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue= {formData.name} />
-                    </label>
-                </div>
-                
 
-                <div className= "form-group">
-                    <label>
-                        Contact Details (At least one):
-                        <input name = "email" type ="email" className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue = {formData.email}/>
-                        
-                        <input name = "phone" type="text" className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue = {formData.phone} />
-                    </label>
-                </div>
-                
+                <div class="container border bg-light">
 
-                <div className= "form-group">
-                    <label>
-                        Address:
-                        <input name = "address" type = "text" className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue = {formData.address} />
-                    </label>
+                    <p className = "text-primary"><strong>About You:</strong></p>
 
+                    <div className = "form-group">
+                        <label>
+                            Your Name:*
+                            <input name ="name" type= "text"className = {inputClassRStrap} onChange = {handleChange} defaultValue= {formData.name} />
+                        </label>
+                    </div>
+                    
                     <label>
-                        City:
-                        <input name = "city" type ="text" className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue = {formData.city} />
-                    </label>
+                            Contact Details (At least one):*
+                        <div className= "form-group">
+                                <label>
+                                    Email:
+                                    <input name = "email" type ="email" className = {inputClassRStrap} onChange = {handleChange} defaultValue = {formData.email}/>
+                                </label>
 
-                    <label>
-                    State: 
-                    <select id = "usState" name= "usState" className = "mb-2 mr-sm-2" onChange = {handleChange}>
-                            <option value = "" >--Please Choose--</option>
-                            <StateOptions />
+                                <label>
+                                    Phone:
+                                    <input name = "phone" type="text" className = {inputClassRStrap} onChange = {handleChange} defaultValue = {formData.phone} />
+                                </label>
+                        </div>
+                    </label>
+                    
+
+                    <div className= "form-group">
+
+                        <label>
+                            Address:
+                            <input name = "address" type = "text" className = {inputClassRStrap} onChange = {handleChange} defaultValue = {formData.address} />
+                        </label>
+
+                        <label>
+                            City:
+                            <input name = "city" type ="text" className = {inputClassRStrap} onChange = {handleChange} defaultValue = {formData.city} />
+                        </label>
+
+                        <label>
+                        State:* 
+                        <select id = "usState" name= "usState" className = {inputClassRStrap} onChange = {handleChange}>
+                                <option value = "" >--Please Choose--</option>
+                                <StateOptions />
                         </select>
-                    </label>
+                        </label>
 
-                    <label>
-                        Zip Code:
-                        <input name = "zipcode" type = "text"className = "mb-2 mr-sm-2" onChange = {handleChange} defaultValue= {formData.zipcode} />
-                    </label>
+                        <label>
+                            Zip Code:
+                            <input name = "zipcode" type = "text"className = {inputClassRStrap} onChange = {handleChange} defaultValue= {formData.zipcode} />
+                        </label>
+                    </div>
                 </div>
 
+                <br/> <br/>
+                <div class="container border bg-light">
+                    
+                    <p className = "text-primary"><strong>About Your Equipment:</strong></p>
+                    
+                    <div className = "form-group" >
+                        <label>
+                            Equipment Type:*
+                            <select id = "equipmentType" name = "equipmentType" className = {inputClassRStrap} onChange = {handleChange}>
+                                <option value = "">--Please Choose--</option>
+                                <EquipmentOptions data = {equipmentList} />
+                            </select>
+                        </label>
+                    </div>
 
+                    <div className = "form-group">
+                        <label> Description:*
+                            <textarea name = "description" rows = "8" cols="60" className = {inputClassRStrap} defaultValue = {formData.description} onChange = {handleChange}  /> 
+                        </label>
+                    </div>
 
-
-                <h1>About Your Equipment:</h1>
-                
-                <div className = "form-group" >
-                    <label>
-                        Equipment Type:
-                        <select id = "equipmentType" name = "equipmentType" className = "mb-2 mr-sm-2" onChange = {handleChange}>
-                            <option value = "">--Please Choose--</option>
-                            <EquipmentOptions data = {equipmentList} />
-                        </select>
-                    </label>
+                    <div className = "form-group">
+                        <label> Estimated Value:
+                                <input name = "estimatedValue" type= "number" className = {inputClassRStrap} defaultValue = {formData.estimatedValue} />
+                        </label>
+                    </div>
                 </div>
 
-                <div className = "form-group">
-                    <label> Description:
-                        <textarea name = "description" rows = "8" cols="60" className = "mb-2 mr-sm-2" defaultValue = {formData.description} onChange = {handleChange}  /> 
-                    </label>
-                </div>
-
-                <div className = "form-group">
-                    <label> Estimated Value:
-                            <input name = "estimatedValue" type= "number" className = "mb-2 mr-sm-2" defaultValue = {formData.estimatedValue} />
-                    </label>
-                </div>
-
-
-                <input type = "submit" />
+                <br/>
+                <button type = "submit" className="btn border bg-primary text-light"> Submit </button>
 
                 
             </form>
